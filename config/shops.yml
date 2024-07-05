@@ -1,0 +1,12 @@
+cats_unlimited:
+  shop_name: "Cats Unlimited"
+  file_type: "json"
+  file_name: "cats_unlimited.json"
+  url: "https://nh7b1g9g23.execute-api.us-west-2.amazonaws.com/dev/cats/json"
+happy_cats:
+  shop_name: "Happy Cats"
+  file_type: "xml"
+  file_name: "happy_cats.xml"
+  url: "https://nh7b1g9g23.execute-api.us-west-2.amazonaws.com/dev/cats/xml"
+  rename_columns: {"title": "name", "img": "image", "cost": "price"}
+  dig_data: ['cats','cat']
