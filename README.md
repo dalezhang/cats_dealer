@@ -46,8 +46,8 @@ happy_cats:
 
 Currently, I have rescue the error. And store the response data in `tmp` folder.
 - If it is the first time call this service. Those unavaliable url will be skipped.
-- If it is not the first time. We will use the store response in `tmp` folder.
-    - If one url is not avaliable before. We will try it again.
+- If it is not the first time. You can use the store response in `tmp` folder. Or you can choice not using the cache by `CatsService.best_price(nil, false)`. The second param is if the service should use cache files or not. Use `true` by default.
+    - If one url is not avaliable before. If will not have a cache file in `tmp` folder. We will try to call this url again.
 
 > In the response, some APIs can return really a lot of data. How would you solve this problem?
 
@@ -55,7 +55,7 @@ When we have a lot of data. One choice is store them in a database. And searchin
 
 However in some situation this is not a good idea. For example the cats imformation in each shop often changes. Some cats are not avaliable anymore. It's not a good idea to update the data in database each time we do the request.
 
-So I used Python to do the job. Python is good at dealing with big data. With much lower memory cost then ruby. I save the the response body of shop urls in `tmp` folder. Then use Python script to read these file and search the best price cat we need.
+So I used `pandas` in python script to do the job. `pandas` is good at dealing with big data. Especially combining data and sorting. With much lower memory cost then Ruby. I save the the response body of shop urls in `tmp` folder. Then use python script to read these file and search the best price cat we need.
 
 
 
@@ -63,12 +63,14 @@ So I used Python to do the job. Python is good at dealing with big data. With mu
 
 ```sh
 pip install xmltodict
+pip install pandas
 bundle install
 ```
 
 
 ```ruby
-result = CatsService.best_price('curl')
+use_cache = false
+result = CatsService.best_price('curl', use_cache)
 ```
 
 ### How to test

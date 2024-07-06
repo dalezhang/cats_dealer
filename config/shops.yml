@@ -10,3 +10,8 @@ happy_cats:
   url: "https://nh7b1g9g23.execute-api.us-west-2.amazonaws.com/dev/cats/xml"
   rename_columns: {"title": "name", "img": "image", "cost": "price"}
   dig_data: ['cats','cat']
+fack_shop:
+  shop_name: "Fack shop"
+  file_type: "json"
+  file_name: "fack_shop.json"
+  url: "https://no_where.com"

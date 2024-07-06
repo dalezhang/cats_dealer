@@ -1,6 +1,7 @@
 import sys
 import json
 import xmltodict
+import pandas as pd
 
 json_params_str = sys.argv[1].replace("\n", "")
 params = json.loads(json_params_str)
@@ -22,34 +23,23 @@ def read_data_from_file(file_path, file_type, dig_data):
 
     return data
 
-def rename_colum_for_data(data, origin_name, new_name):
-    for item in data:
-        item[new_name] = item[origin_name]
-        del item[origin_name]
 
-def add_shop_name_for_data(data, shop_name):
-    for item in data:
-        item['shop_name'] = shop_name
-
-data = []
+df = pd.DataFrame()
 # ["shop_name":"Cats Unlimited","file_type":"json","file_path":"./cats_unlimited.json", "dig_data": ['cats'], "rename_columns": {"img": "image"}}]
 for shop in params['shops']:
     temp_data = read_data_from_file(shop['file_path'], shop['file_type'], shop.get('dig_data') )
+    temp_df = pd.DataFrame(temp_data)
     if shop.get('rename_columns') != None:
-        for origin_name, new_name in shop.get('rename_columns').items():
-            rename_colum_for_data(temp_data, origin_name, new_name)
+        temp_df = temp_df.rename(columns=shop.get('rename_columns'))
 
-    add_shop_name_for_data(temp_data, shop['shop_name'])
-    data = data + temp_data
+    temp_df['shop'] = 'happy_cats'
+    df = pd.concat([df, temp_df], axis=0)
     
 if params.get('cat_name') != None:
-    data = [item for item in data if params['cat_name'].lower() in item.get('name').lower()]
+    df = df[df['name'].str.contains(params['cat_name'], case=False)]
 
-for item in data:
-    item['price'] = int(item['price'])
+df['price'] = df['price'].astype(int)
+df = df.sort_values(by='price', ascending=True)
+json_data = df.head(1).to_json(orient='records')
+print(json_data)
 
-data.sort(key=lambda x: x['price'])
-
-json_str = json.dumps(data[0])
-
-print(json_str)
