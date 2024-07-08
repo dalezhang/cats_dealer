@@ -20,10 +20,12 @@ class CatsService
         end
       end
     end
-    puts "params: #{params.to_json}"
-    # [{"shop_name":"Cats Unlimited","file_type":"json","file_path":"./cats_unlimited.json", "dig_data": ['cats'], "rename_columns": {"img": "image"}}]
+	# params =>
+    # {"cat_name":null,"shops":[
+	# 	{"shop_name":"Cats Unlimited","file_path":"..","file_type":"json","dig_data":[],"rename_columns":{}},
+	#   {"shop_name":"Happy Cats","file_path":"..","file_type":"xml","dig_data":["cats","cat"],"rename_columns":{"title":"name","img":"image","cost":"price"}}]}
     result_str = `python lib/python/return_best_price_from_shops.py '#{params.to_json}'`
-    JSON.parse(result_str)[0]
+	JSON.parse(result_str)[0]
   end
 
   private
