@@ -29,8 +29,13 @@ def convert_repeat_values_to_category(df, convert_columns):
 		df[col] = df[col].astype('category')
 
 
+# - Read settings from shops
+# - Store cats info in DataFrame
+# - Rename columns
+# - Assign shop name
+# - Merge DataFrame
+# - Convert repeat values to `category`
 df = pd.DataFrame()
-
 for shop in params['shops']:
     temp_data = read_data_from_file(shop['file_path'], shop['file_type'], shop.get('dig_data') )
     temp_df = pd.DataFrame(temp_data)
@@ -41,11 +46,22 @@ for shop in params['shops']:
     df = pd.concat([df, temp_df], axis=0)
     convert_repeat_values_to_category(df, ['name', 'shop', 'location'])
     
+# Search cats by name. With case insensitive
 if params.get('cat_name') != None:
     df = df[df['name'].str.contains(params['cat_name'], case=False)]
 
+# Convert price to integer for sorting
 df['price'] = df['price'].astype(int)
+
+# Sorting by price. The smallest comes first.
 df = df.sort_values(by='price', ascending=True)
-json_data = df.head(1).to_json(orient='records')
+
+# Max results size we should return
+json_data = ""
+if params.get('max_results_size') != None:
+	json_data = df.head(params.get('max_results_size')).to_json(orient='records')
+else:
+	json_data = df.head(1).to_json(orient='records')
+
 print(json_data)
 
